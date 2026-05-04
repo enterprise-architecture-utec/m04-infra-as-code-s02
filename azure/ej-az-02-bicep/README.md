@@ -69,19 +69,31 @@ output ...
 El archivo `main.bicepparam` define los valores que se pasarán a la plantilla Bicep.
 Asegúrate de usar un `uniqueSuffix` único para evitar conflictos de nombres en la suscripción.
 
-> Nota: `main.bicepparam` puede usar la sintaxis Bicep con `using 'main.bicep'` para que los parámetros se asignen a la plantilla.
+> Nota: aunque la documentación Bicep muestra un formato `using 'main.bicep'`, esa sintaxis puede no ser compatible con algunas versiones de Azure CLI. Para evitar el error `unrecognized template parameter 'using 'main.bicep'`, use el formato JSON estándar en `main.bicepparam`.
 
 ---
 
 ## 📦 Ejemplo de parámetros
 
-```bicep
-using 'main.bicep'
-
-param environmentName = 'lab'
-param location = 'eastus2'
-param storageAccountSku = 'Standard_LRS'
-param uniqueSuffix = 'tu-nombre'
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "lab"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "storageAccountSku": {
+      "value": "Standard_LRS"
+    },
+    "uniqueSuffix": {
+      "value": "tu-nombre"
+    }
+  }
+}
 ```
 
 ---
