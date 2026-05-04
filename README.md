@@ -12,7 +12,7 @@
 ```
 m04-native-iac-labs/
 ├── aws/
-│   └── ej-aws-01-cloudformation/      # VPC + EC2 + S3
+│   └── ej-aws-01-cloudformation/      # VPC + S3
 └── azure/
     ├── ej-az-01-arm/                  # VNet + Storage Account (ARM)
     └── ej-az-02-bicep/                # Storage Account + Key Vault (Bicep)
