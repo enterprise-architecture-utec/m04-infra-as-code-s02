@@ -30,7 +30,7 @@ Aprovisionar una infraestructura básica en AWS utilizando una plantilla CloudFo
 # Verificar autenticación
 aws sts get-caller-identity
 
-# Configurar región por defecto
+# Configurar región por defecto (Considera la región asignada)
 aws configure set region us-west-2
 ```
 
