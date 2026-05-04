@@ -69,8 +69,6 @@ output ...
 Abre `main.bicepparam` y reemplaza `tu-nombre` con un sufijo único para evitar conflictos con otros alumnos:
 
 ```bicepparam
-targetScope = 'resourceGroup'
-
 param environmentName string = 'lab'
 param location string = 'eastus2'
 param storageAccountSku string = 'Standard_LRS'
