@@ -6,16 +6,13 @@
       "value": "lab"
     },
     "location": {
-      "value": "eastus"
+      "value": "eastus2"
     },
     "storageAccountSku": {
       "value": "Standard_LRS"
     },
     "uniqueSuffix": {
       "value": "tu-nombre"
-    },
-    "functionRuntime": {
-      "value": "node"
     }
   }
 }
