@@ -1,0 +1,151 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Lab AWS-01 — Infraestructura básica con CloudFormation. Crea una VPC, Subnet pública, Internet Gateway, Security Group y un bucket S3.
+
+# =============================================================
+# PARAMETERS — Variables de entrada parametrizables
+# =============================================================
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: lab
+    AllowedValues:
+    - lab
+    - dev
+    - prod
+    Description: Nombre del entorno (lab, dev o prod)
+
+  UniqueSuffix:
+    Type: String
+    Description: Sufijo único para evitar conflictos de nombres (ej. nombre-del-alumno)
+
+# =============================================================
+# RESOURCES — Recursos a aprovisionar (OBLIGATORIO)
+# =============================================================
+Resources:
+
+  # --- VPC ---
+  LabVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+      - Key: Name
+        Value: !Sub "${EnvironmentName}-VPC-${UniqueSuffix}"
+      - Key: Environment
+        Value: !Ref EnvironmentName
+
+  # --- Internet Gateway ---
+  LabInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub "${EnvironmentName}-IGW-${UniqueSuffix}"
+
+  # --- Adjuntar IGW a la VPC ---
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref LabVPC
+      InternetGatewayId: !Ref LabInternetGateway
+
+  # --- Subnet pública ---
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref LabVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: !Sub "${EnvironmentName}-Public-Subnet-${UniqueSuffix}"
+
+  # --- Tabla de rutas pública ---
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref LabVPC
+      Tags:
+      - Key: Name
+        Value: !Sub "${EnvironmentName}-Public-RT-${UniqueSuffix}"
+
+  # --- Ruta por defecto hacia Internet ---
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref LabInternetGateway
+
+  # --- Asociar subnet con tabla de rutas ---
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  # --- Security Group ---
+  LabSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group para el laboratorio
+      VpcId: !Ref LabVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+        Description: SSH desde cualquier origen (solo para laboratorio)
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+        Description: HTTP desde cualquier origen
+      SecurityGroupEgress:
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+        Description: Todo el tráfico saliente permitido
+      Tags:
+      - Key: Name
+        Value: !Sub "${EnvironmentName}-SG-${UniqueSuffix}"
+
+  # --- Bucket S3 ---
+  LabS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "lab-native-iac-${UniqueSuffix}-${AWS::AccountId}-${AWS::Region}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+      - Key: Name
+        Value: !Sub "${EnvironmentName}-S3-${UniqueSuffix}"
+      - Key: Environment
+        Value: !Ref EnvironmentName
+
+# =============================================================
+# OUTPUTS — Valores exportados al finalizar el despliegue
+# =============================================================
+Outputs:
+  VPCId:
+    Description: ID de la VPC creada
+    Value: !Ref LabVPC
+    Export:
+      Name: !Sub "${EnvironmentName}-VPCId-${UniqueSuffix}"
+
+  PublicSubnetId:
+    Description: ID de la Subnet pública
+    Value: !Ref PublicSubnet
+    Export:
+      Name: !Sub "${EnvironmentName}-PublicSubnetId-${UniqueSuffix}"
+
+  S3BucketName:
+    Description: Nombre del bucket S3 creado
+    Value: !Ref LabS3Bucket
