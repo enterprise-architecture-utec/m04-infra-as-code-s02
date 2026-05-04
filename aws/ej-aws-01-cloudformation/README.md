@@ -11,8 +11,8 @@
 
 Aprovisionar una infraestructura básica en AWS utilizando una plantilla CloudFormation en YAML. Al finalizar este ejercicio habrás creado:
 
-- ✅ Una **VPC** con CIDR `10.0.0.0/16`
-- ✅ Una **Subnet pública** con CIDR `10.0.1.0/24`
+- ✅ Una **VPC** con CIDR `10.{StudentId}.0.0/16` (parametrizable)
+- ✅ Una **Subnet pública** con CIDR `10.{StudentId}.1.0/24`
 - ✅ Un **Internet Gateway** adjunto a la VPC
 - ✅ Una **tabla de rutas** con ruta a Internet
 - ✅ Un **Security Group** con acceso SSH (puerto 22) y HTTP (puerto 80)
@@ -63,7 +63,7 @@ Outputs: ...        # Valores exportados al finalizar
 
 ### Paso 2 — Editar los parámetros
 
-Abre `parameters.json` y reemplaza `tu-nombre` con un sufijo único para evitar conflictos con otros alumnos (ej. tu-nombre-apellido):
+Abre `parameters.json` y reemplaza `tu-nombre` con un sufijo único para evitar conflictos con otros alumnos (ej. tu-nombre-apellido), y asigna un `StudentId` único (número entre 0-255) para definir el segmento de red:
 
 ```json
 [
@@ -74,6 +74,10 @@ Abre `parameters.json` y reemplaza `tu-nombre` con un sufijo único para evitar 
   {
     "ParameterKey": "UniqueSuffix",
     "ParameterValue": "tu-nombre"
+  },
+  {
+    "ParameterKey": "StudentId",
+    "ParameterValue": "1"
   }
 ]
 ```
