@@ -1,19 +1,18 @@
-# ☁️ AZ-01 — Storage Account + Azure Functions con Azure Resource Manager (ARM)
+# ☁️ AZ-01 — Storage Account + Key Vault con Azure Resource Manager (ARM)
 
 **Módulo:** 4 — Aprovisionamiento con IaC y Automatización  
 **Herramienta:** Azure Resource Manager (ARM)  
-**Tiempo estimado:** 20 minutos  
+**Tiempo estimado:** 15 minutos  
 **Nivel:** Intermedio
 
 ---
 
 ## 🎯 Objetivo
 
-Desplegar recursos de almacenamiento y computación serverless en Azure utilizando una plantilla ARM en formato JSON. Al finalizar este ejercicio habrás creado:
+Desplegar recursos de almacenamiento y seguridad en Azure utilizando una plantilla ARM en formato JSON. Al finalizar este ejercicio habrás creado:
 
 - ✅ Una **Storage Account** de propósito general v2
-- ✅ Una **Function App** con runtime configurable (Node.js, .NET, Python)
-- ✅ Un **App Service Plan** en modo Consumption (serverless)
+- ✅ Un **Key Vault** para gestión de secretos
 
 ---
 
@@ -165,11 +164,11 @@ az storage account show \
   --name <nombre-storage-account> \
   --query '{Nombre:name,SKU:sku.name,Estado:provisioningState}'
 
-# Verificar la Function App
-az functionapp show \
+# Verificar el Key Vault
+az keyvault show \
   --resource-group <tu-resource-group> \
-  --name <nombre-function-app> \
-  --query '{Nombre:name,Estado:state,Runtime:siteConfig.appSettings[?name==`FUNCTIONS_WORKER_RUNTIME`].value}'
+  --name <nombre-key-vault> \
+  --query '{Nombre:name,Estado:provisioningState}'
 ```
 
 ---
@@ -200,7 +199,7 @@ echo "✅ Recursos eliminados, pero el Resource Group permanece"
 | **Variables** | Valores calculados internamente en la plantilla |
 | **resourceId()** | Función ARM para referenciar el ID de un recurso |
 | **Nombres únicos** | Uso de sufijos para evitar conflictos en suscripciones compartidas |
-| **Serverless** | Computación sin servidor con Azure Functions y Consumption Plan |
+| **Key Vault** | Servicio para gestión segura de claves, secretos y certificados |
 
 ---
 
