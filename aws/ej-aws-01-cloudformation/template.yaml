@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >
-  Lab AWS-01 — Infraestructura básica con CloudFormation. Crea una VPC, Subnet pública, Internet Gateway, Security Group y un bucket S3.
+  Lab AWS-01 — Infraestructura basica con CloudFormation. Crea una VPC, Subnet pública, Internet Gateway, Security Group y un bucket S3.
 
 # =============================================================
 # PARAMETERS — Variables de entrada parametrizables
@@ -17,13 +17,13 @@ Parameters:
 
   UniqueSuffix:
     Type: String
-    Description: Sufijo único para evitar conflictos de nombres (ej. nombre-del-alumno)
+    Description: Sufijo unico para evitar conflictos de nombres (ej. nombre-del-alumno)
 
   StudentId:
     Type: Number
     MinValue: 0
     MaxValue: 255
-    Description: ID único del estudiante (0-255) para definir el segmento de red
+    Description: ID unico del estudiante (0-255) para definir el segmento de red
 
 # =============================================================
 # RESOURCES — Recursos a aprovisionar (OBLIGATORIO)
@@ -95,7 +95,7 @@ Resources:
       SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref PublicRouteTable
 
-  # --- Security Group ---
+# --- Security Group ---
   LabSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -106,7 +106,7 @@ Resources:
         FromPort: 22
         ToPort: 22
         CidrIp: 0.0.0.0/0
-        Description: SSH desde cualquier origen (solo para laboratorio)
+        Description: SSH desde cualquier origen
       - IpProtocol: tcp
         FromPort: 80
         ToPort: 80
@@ -115,7 +115,7 @@ Resources:
       SecurityGroupEgress:
       - IpProtocol: -1
         CidrIp: 0.0.0.0/0
-        Description: Todo el tráfico saliente permitido
+        Description: Todo el trafico saliente permitido
       Tags:
       - Key: Name
         Value: !Sub "${EnvironmentName}-SG-${UniqueSuffix}"
