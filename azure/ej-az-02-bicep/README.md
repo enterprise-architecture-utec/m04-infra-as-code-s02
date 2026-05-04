@@ -1,15 +1,15 @@
-# ☁️ AZ-01 — Storage Account + Key Vault con Azure Resource Manager (ARM)
+# ☁️ AZ-02 — Storage Account + Key Vault con Bicep
 
-**Módulo:** 4 — Aprovisionamiento con IaC y Automatización  
-**Herramienta:** Azure Resource Manager (ARM)  
-**Tiempo estimado:** 15 minutos  
+**Módulo:** 4 — Aprovisionamiento con IaC y Automatización
+**Herramienta:** Azure Bicep
+**Tiempo estimado:** 15 minutos
 **Nivel:** Intermedio
 
 ---
 
 ## 🎯 Objetivo
 
-Desplegar recursos de almacenamiento y seguridad en Azure utilizando una plantilla ARM en formato JSON. Al finalizar este ejercicio habrás creado:
+Desplegar recursos de almacenamiento y seguridad en Azure utilizando una plantilla Bicep. Al finalizar este ejercicio habrás creado:
 
 - ✅ Una **Storage Account** de propósito general v2
 - ✅ Un **Key Vault** para gestión de secretos
@@ -64,19 +64,29 @@ output ...
 
 > 💡 En Bicep, las plantillas son declarativas y usan sintaxis más compacta que ARM JSON. Las dependencias se resuelven automáticamente mediante referencias entre recursos.
 
-### Paso 3 — Editar los parámetros
+### Paso 3 — Revisar los parámetros
 
-Abre `main.bicepparam` y reemplaza `tu-nombre` con un sufijo único para evitar conflictos con otros alumnos:
+El archivo `main.bicepparam` define los valores que se pasarán a la plantilla Bicep.
+Asegúrate de usar un `uniqueSuffix` único para evitar conflictos de nombres en la suscripción.
 
-```bicepparam
-param environmentName string = 'lab'
-param location string = 'eastus2'
-param storageAccountSku string = 'Standard_LRS'
-param uniqueSuffix string = 'tu-nombre'
+> Nota: `main.bicepparam` puede usar la sintaxis Bicep con `using 'main.bicep'` para que los parámetros se asignen a la plantilla.
+
+---
+
+## 📦 Ejemplo de parámetros
+
+```bicep
+using 'main.bicep'
+
+param environmentName = 'lab'
+param location = 'eastus2'
+param storageAccountSku = 'Standard_LRS'
+param uniqueSuffix = 'tu-nombre'
 ```
 
+---
 
-### Paso 4 — Validar la plantilla
+## 🔧 Validar la plantilla
 
 ```bash
 az deployment group validate \
@@ -85,60 +95,38 @@ az deployment group validate \
   --parameters @main.bicepparam
 ```
 
-Si la validación es exitosa, recibirás un JSON con `"provisioningState": "Succeeded"`.
+---
 
-### Paso 5 — Previsualizar cambios con what-if
+## 🚀 Desplegar la plantilla
 
-El comando `what-if` muestra qué recursos se crearán, modificarán o eliminarán **sin aplicar ningún cambio**:
+```bash
+az deployment group create \
+  --name deploy-native-iac-02 \
+  --resource-group <tu-resource-group> \
+  --template-file main.bicep \
+  --parameters @main.bicepparam
+```
+
+---
+
+## ⚙️ Comandos útiles
 
 ```bash
 az deployment group what-if \
   --resource-group <tu-resource-group> \
   --template-file main.bicep \
   --parameters @main.bicepparam
-```
 
-Analiza la salida:
-- `+ Create` → Recurso nuevo
-- `~ Modify` → Recurso que será modificado
-- `- Delete` → Recurso que será eliminado
-
-### Paso 6 — Desplegar la plantilla
-
-```bash
-az deployment group create \
-  --name deploy-native-iac-01 \
-  --resource-group <tu-resource-group> \
-  --template-file main.bicep \
-  --parameters @main.bicepparam
-```
-
-El despliegue tarda aproximadamente **3-5 minutos**.
-
-### Paso 7 — Monitorear el despliegue
-
-```bash
-# Ver el estado del despliegue en curso
 az deployment group show \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-02 \
   --resource-group <tu-resource-group> \
   --query properties.provisioningState
 
-# Listar todas las operaciones del despliegue
 az deployment operation group list \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-02 \
   --resource-group <tu-resource-group> \
-  --query '[*].{Recurso:properties.targetResource.resourceName,Estado:properties.provisioningState}' \
+  --query '[*].{Nombre:properties.targetResource.resourceName,Estado:properties.provisioningState}' \
   --output table
-```
-
-### Paso 8 — Ver los Outputs
-
-```bash
-az deployment group show \
-  --name deploy-native-iac-01 \
-  --resource-group <tu-resource-group> \
-  --query properties.outputs
 ```
 
 ---
@@ -146,23 +134,10 @@ az deployment group show \
 ## ✅ Verificación
 
 ```bash
-# Listar todos los recursos en el Resource Group
 az resource list \
   --resource-group <tu-resource-group> \
   --query '[*].{Nombre:name,Tipo:type,Estado:provisioningState}' \
   --output table
-
-# Verificar la Storage Account
-az storage account show \
-  --resource-group <tu-resource-group> \
-  --name <nombre-storage-account> \
-  --query '{Nombre:name,SKU:sku.name,Estado:provisioningState}'
-
-# Verificar el Key Vault
-az keyvault show \
-  --resource-group <tu-resource-group> \
-  --name <nombre-key-vault> \
-  --query '{Nombre:name,Estado:provisioningState}'
 ```
 
 ---
@@ -170,35 +145,16 @@ az keyvault show \
 ## 🧹 Limpieza
 
 ```bash
-# Eliminar los recursos desplegados (NO eliminar el Resource Group)
 az deployment group delete \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-02 \
   --resource-group <tu-resource-group>
-
-echo "✅ Recursos eliminados, pero el Resource Group permanece"
 ```
 
-> ⚠️ El Resource Group no se elimina porque ya existía antes del ejercicio.
+> ⚠️ Esto elimina el despliegue, pero no borra el Resource Group.
 
 ---
 
-## 🔍 Conceptos Clave Practicados
+## 📌 Notas
 
-| Concepto | Descripción |
-|----------|-------------|
-| **Resource Group** | Contenedor lógico de recursos en Azure |
-| **ARM Template** | Plantilla JSON declarativa para despliegue en Azure |
-| **what-if** | Previsualización de cambios antes de aplicar (equivalente a `terraform plan`) |
-| **dependsOn** | Define dependencias explícitas entre recursos |
-| **Variables** | Valores calculados internamente en la plantilla |
-| **resourceId()** | Función ARM para referenciar el ID de un recurso |
-| **Nombres únicos** | Uso de sufijos para evitar conflictos en suscripciones compartidas |
-| **Key Vault** | Servicio para gestión segura de claves, secretos y certificados |
-
----
-
-## 📚 Referencias
-
-- [Estructura de plantillas ARM](https://learn.microsoft.com/es-es/azure/azure-resource-manager/templates/syntax)
-- [Funciones de plantilla ARM](https://learn.microsoft.com/es-es/azure/azure-resource-manager/templates/template-functions)
-- [az deployment group](https://learn.microsoft.com/es-es/cli/azure/deployment/group)
+- El archivo `main.bicepparam` debe ser un archivo de parámetros JSON válido.
+- Si recibes un error de parámetros no reconocidos, revisa que el valor `uniqueSuffix` esté presente y que no estés usando un archivo de parámetros en un formato incorrecto.

@@ -1,4 +1,6 @@
-param environmentName string = 'lab'
-param location string = 'eastus2'
-param storageAccountSku string = 'Standard_LRS'
-param uniqueSuffix string = 'atrucios'
+using 'main.bicep'
+
+param environmentName = 'lab'
+param location = 'eastus2'
+param storageAccountSku = 'Standard_LRS'
+param uniqueSuffix = 'atrucios'
