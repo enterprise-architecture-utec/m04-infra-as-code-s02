@@ -24,11 +24,11 @@ m04-native-iac-labs/
 
 | # | Ejercicio | Carpeta | Servicios | Tiempo |
 |---|-----------|---------|-----------|--------|
-| AWS-01 | [VPC + EC2 + S3](aws/ej-aws-01-cloudformation/README.md) | `aws/ej-aws-01-cloudformation/` | VPC, EC2, S3 | 25 min |
-| AZ-01 | [VNet + Storage Account](azure/ej-az-01-arm/README.md) | `azure/ej-az-01-arm/` | VNet, Storage Account | 25 min |
-| AZ-02 | [Storage Account + Key Vault](azure/ej-az-02-bicep/README.md) | `azure/ej-az-02-bicep/` | Storage Account, Key Vault | 25 min |
+| AWS-01 | [VPC + Subnet pública + IGW + SG + S3](aws/ej-aws-01-cloudformation/README.md) | `aws/ej-aws-01-cloudformation/` | VPC, Subnet pública, IGW, SG, S3 | 20 min |
+| AZ-01 | [Storage Account + Key Vault](azure/ej-az-01-arm/README.md) | `azure/ej-az-01-arm/` | Storage Account, Key Vault | 15 min |
+| AZ-02 | [Storage Account + Key Vault](azure/ej-az-02-bicep/README.md) | `azure/ej-az-02-bicep/` | Storage Account, Key Vault | 15 min |
 
-| | **TOTAL** | | | **~75 min** |
+| | **TOTAL** | | | **~50 min** |
 
 ---
 
