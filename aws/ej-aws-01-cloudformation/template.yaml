@@ -19,6 +19,12 @@ Parameters:
     Type: String
     Description: Sufijo único para evitar conflictos de nombres (ej. nombre-del-alumno)
 
+  StudentId:
+    Type: Number
+    MinValue: 0
+    MaxValue: 255
+    Description: ID único del estudiante (0-255) para definir el segmento de red
+
 # =============================================================
 # RESOURCES — Recursos a aprovisionar (OBLIGATORIO)
 # =============================================================
@@ -28,7 +34,7 @@ Resources:
   LabVPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: !Sub "10.${StudentId}.0.0/16"
       EnableDnsHostnames: true
       EnableDnsSupport: true
       Tags:
@@ -57,7 +63,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref LabVPC
-      CidrBlock: 10.0.1.0/24
+      CidrBlock: !Sub "10.${StudentId}.1.0/24"
       AvailabilityZone: !Select [ 0, !GetAZs '' ]
       MapPublicIpOnLaunch: true
       Tags:
