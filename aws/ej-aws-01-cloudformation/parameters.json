@@ -5,10 +5,10 @@
   },
   {
     "ParameterKey": "UniqueSuffix",
-    "ParameterValue": "atrucios"
+    "ParameterValue": "<student_name>"
   },
   {
     "ParameterKey": "StudentId",
-    "ParameterValue": "1"
+    "ParameterValue": "<studen_id>"
   }
 ]
