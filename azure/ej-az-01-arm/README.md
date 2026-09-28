@@ -126,13 +126,13 @@ El despliegue tarda aproximadamente **3-5 minutos**.
 ```bash
 # Ver el estado del despliegue en curso
 az deployment group show \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --query properties.provisioningState
 
 # Listar todas las operaciones del despliegue
 az deployment operation group list \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --query '[*].{Recurso:properties.targetResource.resourceName,Estado:properties.provisioningState}' \
   --output table
@@ -142,7 +142,7 @@ az deployment operation group list \
 
 ```bash
 az deployment group show \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --query properties.outputs
 ```
@@ -178,7 +178,7 @@ az keyvault show \
 ```bash
 # Eliminar los recursos desplegados (NO eliminar el Resource Group)
 az deployment group delete \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group>
 
 echo "✅ Recursos eliminados, pero el Resource Group permanece"
