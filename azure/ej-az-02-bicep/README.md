@@ -1,4 +1,4 @@
-# ☁️ AZ-02 — Storage Account + Key Vault con Bicep
+# ☁️ AZ-02 — Storage Account con Bicep
 
 **Módulo:** 4 — Aprovisionamiento con IaC y Automatización
 **Herramienta:** Azure Bicep
@@ -9,17 +9,16 @@
 
 ## 🎯 Objetivo
 
-Desplegar recursos de almacenamiento y seguridad en Azure utilizando una plantilla Bicep. Al finalizar este ejercicio habrás creado:
+Desplegar una cuenta de almacenamiento en Azure utilizando una plantilla Bicep. Al finalizar este ejercicio habrás creado:
 
 - ✅ Una **Storage Account** de propósito general v2
-- ✅ Un **Key Vault** para gestión de secretos
 
 ---
 
 ## 📋 Prerrequisitos
 
 - Azure CLI instalado y autenticado (`az login`)
-- Una suscripción de Azure activa con rol `Contributor`
+- Una suscripción de Azure activa con permisos para crear Storage Accounts
 - Resource Group ya creado (cada alumno debe usar su propio RG)
 
 ```bash
@@ -45,7 +44,7 @@ az account list --output table
 
 ### Paso 1 — Verificar el Resource Group
 
-El Resource Group debe existir **antes** del despliegue. Cada alumno debe usar su propio RG (ej. `rg-alumno1-lab`):
+El Resource Group debe existir **antes** del despliegue. Cada alumno debe usar su propio RG (ej. `rg-prg-arq-multinube`):
 
 ```bash
 az group show --name <tu-resource-group>
@@ -69,7 +68,7 @@ output ...
 El archivo `main.bicepparam` define los valores que se pasarán a la plantilla Bicep.
 Asegúrate de usar un `uniqueSuffix` único para evitar conflictos de nombres en la suscripción.
 
-> Nota: aunque la documentación Bicep muestra un formato `using 'main.bicep'`, esa sintaxis puede no ser compatible con algunas versiones de Azure CLI. Para evitar el error `unrecognized template parameter 'using 'main.bicep'`, use el formato JSON estándar en `main.bicepparam`.
+> Nota: aunque la documentación Bicep muestra un formato `using 'main.bicep'`, esa sintaxis puede no ser compatible con algunas versiones de Azure CLI. Para evitar el error `unrecognized template parameter 'using 'main.bicep'`, use el formato JSON estándar en `main.bicepparam` (reemplaza <tu-nombre>).
 
 ---
 
@@ -113,7 +112,7 @@ az deployment group validate \
 
 ```bash
 az deployment group create \
-  --name deploy-native-iac-02 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --template-file main.bicep \
   --parameters @main.bicepparam
@@ -130,12 +129,12 @@ az deployment group what-if \
   --parameters @main.bicepparam
 
 az deployment group show \
-  --name deploy-native-iac-02 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --query properties.provisioningState
 
 az deployment operation group list \
-  --name deploy-native-iac-02 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --query '[*].{Nombre:properties.targetResource.resourceName,Estado:properties.provisioningState}' \
   --output table
@@ -158,7 +157,7 @@ az resource list \
 
 ```bash
 az deployment group delete \
-  --name deploy-native-iac-02 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group>
 ```
 
