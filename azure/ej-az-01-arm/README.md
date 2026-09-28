@@ -1,4 +1,4 @@
-# ☁️ AZ-01 — Storage Account + Key Vault con Azure Resource Manager (ARM)
+# ☁️ AZ-01 — Storage Account con Azure Resource Manager (ARM)
 
 **Módulo:** 4 — Aprovisionamiento con IaC y Automatización  
 **Herramienta:** Azure Resource Manager (ARM)  
@@ -9,17 +9,16 @@
 
 ## 🎯 Objetivo
 
-Desplegar recursos de almacenamiento y seguridad en Azure utilizando una plantilla ARM en formato JSON. Al finalizar este ejercicio habrás creado:
+Desplegar una cuenta de almacenamiento en Azure utilizando una plantilla ARM en formato JSON. Al finalizar este ejercicio habrás creado:
 
 - ✅ Una **Storage Account** de propósito general v2
-- ✅ Un **Key Vault** para gestión de secretos
 
 ---
 
 ## 📋 Prerrequisitos
 
 - Azure CLI instalado y autenticado (`az login`)
-- Una suscripción de Azure activa con rol `Contributor`
+- Una suscripción de Azure activa con permisos para crear Storage Accounts
 - Resource Group ya creado (cada alumno debe usar su propio RG)
 
 ```bash
@@ -113,13 +112,13 @@ Analiza la salida:
 
 ```bash
 az deployment group create \
-  --name deploy-native-iac-01 \
+  --name deploy-native-iac-<tu-nombre> \
   --resource-group <tu-resource-group> \
   --template-file azuredeploy.json \
   --parameters @azuredeploy.parameters.json
 ```
 
-El despliegue tarda aproximadamente **3-5 minutos**.
+El despliegue tarda aproximadamente **1-3 minutos**.
 
 ### Paso 7 — Monitorear el despliegue
 
@@ -164,11 +163,6 @@ az storage account show \
   --name <nombre-storage-account> \
   --query '{Nombre:name,SKU:sku.name,Estado:provisioningState}'
 
-# Verificar el Key Vault
-az keyvault show \
-  --resource-group <tu-resource-group> \
-  --name <nombre-key-vault> \
-  --query '{Nombre:name,Estado:provisioningState}'
 ```
 
 ---
@@ -199,7 +193,6 @@ echo "✅ Recursos eliminados, pero el Resource Group permanece"
 | **Variables** | Valores calculados internamente en la plantilla |
 | **resourceId()** | Función ARM para referenciar el ID de un recurso |
 | **Nombres únicos** | Uso de sufijos para evitar conflictos en suscripciones compartidas |
-| **Key Vault** | Servicio para gestión segura de claves, secretos y certificados |
 
 ---
 
